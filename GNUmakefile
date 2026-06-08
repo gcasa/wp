@@ -33,12 +33,8 @@ WordProcessor_OBJC_FILES = \
 	Sources/WPAppDelegate.m \
 	Sources/WPDocument.m
 
-WordProcessor_RESOURCE_FILES = \
-	Resources/Info.plist
-
 WordProcessor_APPLICATION_ICON =
 WordProcessor_MAIN_MODEL_FILE =
-WordProcessor_INFO_PLIST = Resources/Info.plist
 
 ADDITIONAL_OBJCFLAGS += -Wall -Wextra
 

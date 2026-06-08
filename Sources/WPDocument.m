@@ -20,6 +20,9 @@ static NSString *WPDefaultDocumentType(void)
 - (void)dealloc
 {
   [_loadedString release];
+  [_textContainer release];
+  [_layoutManager release];
+  [_textStorage release];
   [super dealloc];
 }
 
@@ -79,17 +82,21 @@ static NSString *WPDefaultDocumentType(void)
   [_scrollView setRulersVisible:YES];
   [_scrollView setHasHorizontalRuler:YES];
 
-  NSTextStorage *textStorage = [[[NSTextStorage alloc] init] autorelease];
-  NSLayoutManager *layoutManager = [[[NSLayoutManager alloc] init] autorelease];
-  NSTextContainer *textContainer = [[[NSTextContainer alloc] initWithContainerSize:NSMakeSize(pageWidth, 10000000.0)] autorelease];
+  [_textContainer release];
+  [_layoutManager release];
+  [_textStorage release];
 
-  [layoutManager addTextContainer:textContainer];
-  [textStorage addLayoutManager:layoutManager];
-  [textContainer setWidthTracksTextView:NO];
-  [textContainer setHeightTracksTextView:NO];
+  _textStorage = [[NSTextStorage alloc] init];
+  _layoutManager = [[NSLayoutManager alloc] init];
+  _textContainer = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize(pageWidth, 10000000.0)];
+
+  [_layoutManager addTextContainer:_textContainer];
+  [_textStorage addLayoutManager:_layoutManager];
+  [_textContainer setWidthTracksTextView:NO];
+  [_textContainer setHeightTracksTextView:NO];
 
   _textView = [[[NSTextView alloc] initWithFrame:NSMakeRect(28.0, 28.0, pageWidth, bounds.size.height - 56.0)
-                                   textContainer:textContainer] autorelease];
+                                   textContainer:_textContainer] autorelease];
   [_textView setMinSize:NSMakeSize(0.0, bounds.size.height)];
   [_textView setMaxSize:NSMakeSize(10000000.0, 10000000.0)];
   [_textView setVerticallyResizable:YES];

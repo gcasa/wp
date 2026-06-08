@@ -1,0 +1,19 @@
+{
+  ApplicationName = "WordProcessor";
+  ApplicationDescription = "A document-oriented rich text word processor";
+  ApplicationRelease = "1.0";
+  Authors = ("Codex");
+  CFBundleIdentifier = "local.codex.WordProcessor";
+  NSDocumentClass = WPDocument;
+  NSTypes = (
+    {
+      NSDocumentClass = WPDocument;
+      NSName = "Rich Text Format";
+      NSHumanReadableName = "Rich Text Format";
+      NSUnixExtensions = ("rtf");
+      NSDOSExtensions = ("rtf");
+      NSMIMETypes = ("text/rtf");
+      NSRole = Editor;
+    }
+  );
+}

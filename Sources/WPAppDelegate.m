@@ -58,22 +58,22 @@
   NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"WordProcessor"] autorelease];
   NSMenuItem *item = nil;
 
-  item = [menu addItemWithTitle:@"About WordProcessor" action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
+  item = (NSMenuItem *)[menu addItemWithTitle:@"About WordProcessor" action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
   [item setTarget:NSApp];
   [menu addItem:[NSMenuItem separatorItem]];
-  item = [menu addItemWithTitle:@"Services" action:NULL keyEquivalent:@""];
+  item = (NSMenuItem *)[menu addItemWithTitle:@"Services" action:NULL keyEquivalent:@""];
   [item setSubmenu:[[[NSMenu alloc] initWithTitle:@"Services"] autorelease]];
   [NSApp setServicesMenu:[item submenu]];
   [menu addItem:[NSMenuItem separatorItem]];
-  item = [menu addItemWithTitle:@"Hide WordProcessor" action:@selector(hide:) keyEquivalent:@"h"];
+  item = (NSMenuItem *)[menu addItemWithTitle:@"Hide WordProcessor" action:@selector(hide:) keyEquivalent:@"h"];
   [item setTarget:NSApp];
-  item = [menu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@"h"];
+  item = (NSMenuItem *)[menu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@"h"];
   [item setTarget:NSApp];
   [item setKeyEquivalentModifierMask:(NSEventModifierFlagCommand | NSEventModifierFlagOption)];
-  item = [menu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
+  item = (NSMenuItem *)[menu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
   [item setTarget:NSApp];
   [menu addItem:[NSMenuItem separatorItem]];
-  item = [menu addItemWithTitle:@"Quit WordProcessor" action:@selector(terminate:) keyEquivalent:@"q"];
+  item = (NSMenuItem *)[menu addItemWithTitle:@"Quit WordProcessor" action:@selector(terminate:) keyEquivalent:@"q"];
   [item setTarget:NSApp];
   return menu;
 }
@@ -84,11 +84,12 @@
   NSDocumentController *controller = [NSDocumentController sharedDocumentController];
   NSMenuItem *item = nil;
 
-  item = [menu addItemWithTitle:@"New" action:@selector(newDocument:) keyEquivalent:@"n"];
+  item = (NSMenuItem *)[menu addItemWithTitle:@"New" action:@selector(newDocument:) keyEquivalent:@"n"];
   [item setTarget:controller];
-  item = [menu addItemWithTitle:@"Open..." action:@selector(openDocument:) keyEquivalent:@"o"];
+  item = (NSMenuItem *)[menu addItemWithTitle:@"Open..." action:@selector(openDocument:) keyEquivalent:@"o"];
   [item setTarget:controller];
-  [menu addItemWithTitle:@"Open Recent" action:NULL keyEquivalent:@""];
+  item = (NSMenuItem *)[menu addItemWithTitle:@"Open Recent" action:NULL keyEquivalent:@""];
+  [item setSubmenu:[self openRecentMenu]];
   [menu addItem:[NSMenuItem separatorItem]];
   [menu addItemWithTitle:@"Close" action:@selector(performClose:) keyEquivalent:@"w"];
   [menu addItemWithTitle:@"Save" action:@selector(saveDocument:) keyEquivalent:@"s"];
@@ -98,6 +99,16 @@
   [menu addItem:[NSMenuItem separatorItem]];
   [menu addItemWithTitle:@"Page Setup..." action:@selector(runPageLayout:) keyEquivalent:@"P"];
   [menu addItemWithTitle:@"Print..." action:@selector(printDocument:) keyEquivalent:@"p"];
+  return menu;
+}
+
+- (NSMenu *)openRecentMenu
+{
+  NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"Open Recent"] autorelease];
+  NSMenuItem *item = (NSMenuItem *)[menu addItemWithTitle:@"Clear Menu"
+                                                   action:@selector(clearRecentDocuments:)
+                                            keyEquivalent:@""];
+  [item setTarget:[NSDocumentController sharedDocumentController]];
   return menu;
 }
 

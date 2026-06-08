@@ -23,6 +23,27 @@
   <string>NSApplication</string>
   <key>NSDocumentClass</key>
   <string>WPDocument</string>
+  <key>NSTypes</key>
+  <array>
+    <dict>
+      <key>NSDocumentClass</key>
+      <string>WPDocument</string>
+      <key>NSName</key>
+      <string>Rich Text Format</string>
+      <key>NSHumanReadableName</key>
+      <string>Rich Text Format</string>
+      <key>NSUnixExtensions</key>
+      <array>
+        <string>rtf</string>
+      </array>
+      <key>NSDOSExtensions</key>
+      <array>
+        <string>rtf</string>
+      </array>
+      <key>NSRole</key>
+      <string>Editor</string>
+    </dict>
+  </array>
   <key>CFBundleDocumentTypes</key>
   <array>
     <dict>
