@@ -16,23 +16,23 @@
 
 - (void)buildMainMenu
 {
-  NSMenu *mainMenu = [[[NSMenu alloc] initWithTitle:@"Main Menu"] autorelease];
-  NSMenuItem *appMenuItem = [[[NSMenuItem alloc] initWithTitle:@""
+  NSMenu *mainMenu = [[[NSMenu alloc] initWithTitle:@"WordProcessor"] autorelease];
+  NSMenuItem *appMenuItem = [[[NSMenuItem alloc] initWithTitle:@"WordProcessor"
                                                         action:NULL
                                                  keyEquivalent:@""] autorelease];
-  NSMenuItem *fileMenuItem = [[[NSMenuItem alloc] initWithTitle:@""
+  NSMenuItem *fileMenuItem = [[[NSMenuItem alloc] initWithTitle:@"File"
                                                          action:NULL
                                                   keyEquivalent:@""] autorelease];
-  NSMenuItem *editMenuItem = [[[NSMenuItem alloc] initWithTitle:@""
+  NSMenuItem *editMenuItem = [[[NSMenuItem alloc] initWithTitle:@"Edit"
                                                          action:NULL
                                                   keyEquivalent:@""] autorelease];
-  NSMenuItem *formatMenuItem = [[[NSMenuItem alloc] initWithTitle:@""
+  NSMenuItem *formatMenuItem = [[[NSMenuItem alloc] initWithTitle:@"Format"
                                                            action:NULL
                                                     keyEquivalent:@""] autorelease];
-  NSMenuItem *viewMenuItem = [[[NSMenuItem alloc] initWithTitle:@""
+  NSMenuItem *viewMenuItem = [[[NSMenuItem alloc] initWithTitle:@"View"
                                                          action:NULL
                                                   keyEquivalent:@""] autorelease];
-  NSMenuItem *windowMenuItem = [[[NSMenuItem alloc] initWithTitle:@""
+  NSMenuItem *windowMenuItem = [[[NSMenuItem alloc] initWithTitle:@"Window"
                                                            action:NULL
                                                     keyEquivalent:@""] autorelease];
 
@@ -56,26 +56,45 @@
 - (NSMenu *)applicationMenu
 {
   NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"WordProcessor"] autorelease];
-  [menu addItemWithTitle:@"About WordProcessor" action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
+  NSMenuItem *item = nil;
+
+  item = [menu addItemWithTitle:@"About WordProcessor" action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
+  [item setTarget:NSApp];
   [menu addItem:[NSMenuItem separatorItem]];
-  [menu addItemWithTitle:@"Hide WordProcessor" action:@selector(hide:) keyEquivalent:@"h"];
-  [menu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@"h"];
-  [[menu itemWithTitle:@"Hide Others"] setKeyEquivalentModifierMask:(NSEventModifierFlagCommand | NSEventModifierFlagOption)];
-  [menu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
+  item = [menu addItemWithTitle:@"Services" action:NULL keyEquivalent:@""];
+  [item setSubmenu:[[[NSMenu alloc] initWithTitle:@"Services"] autorelease]];
+  [NSApp setServicesMenu:[item submenu]];
   [menu addItem:[NSMenuItem separatorItem]];
-  [menu addItemWithTitle:@"Quit WordProcessor" action:@selector(terminate:) keyEquivalent:@"q"];
+  item = [menu addItemWithTitle:@"Hide WordProcessor" action:@selector(hide:) keyEquivalent:@"h"];
+  [item setTarget:NSApp];
+  item = [menu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@"h"];
+  [item setTarget:NSApp];
+  [item setKeyEquivalentModifierMask:(NSEventModifierFlagCommand | NSEventModifierFlagOption)];
+  item = [menu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
+  [item setTarget:NSApp];
+  [menu addItem:[NSMenuItem separatorItem]];
+  item = [menu addItemWithTitle:@"Quit WordProcessor" action:@selector(terminate:) keyEquivalent:@"q"];
+  [item setTarget:NSApp];
   return menu;
 }
 
 - (NSMenu *)fileMenu
 {
   NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"File"] autorelease];
-  [menu addItemWithTitle:@"New" action:@selector(newDocument:) keyEquivalent:@"n"];
-  [menu addItemWithTitle:@"Open..." action:@selector(openDocument:) keyEquivalent:@"o"];
+  NSDocumentController *controller = [NSDocumentController sharedDocumentController];
+  NSMenuItem *item = nil;
+
+  item = [menu addItemWithTitle:@"New" action:@selector(newDocument:) keyEquivalent:@"n"];
+  [item setTarget:controller];
+  item = [menu addItemWithTitle:@"Open..." action:@selector(openDocument:) keyEquivalent:@"o"];
+  [item setTarget:controller];
+  [menu addItemWithTitle:@"Open Recent" action:NULL keyEquivalent:@""];
   [menu addItem:[NSMenuItem separatorItem]];
   [menu addItemWithTitle:@"Close" action:@selector(performClose:) keyEquivalent:@"w"];
   [menu addItemWithTitle:@"Save" action:@selector(saveDocument:) keyEquivalent:@"s"];
   [menu addItemWithTitle:@"Save As..." action:@selector(saveDocumentAs:) keyEquivalent:@"S"];
+  [menu addItemWithTitle:@"Save To..." action:@selector(saveDocumentTo:) keyEquivalent:@""];
+  [menu addItemWithTitle:@"Revert to Saved" action:@selector(revertDocumentToSaved:) keyEquivalent:@""];
   [menu addItem:[NSMenuItem separatorItem]];
   [menu addItemWithTitle:@"Page Setup..." action:@selector(runPageLayout:) keyEquivalent:@"P"];
   [menu addItemWithTitle:@"Print..." action:@selector(printDocument:) keyEquivalent:@"p"];
@@ -92,6 +111,7 @@
   [menu addItemWithTitle:@"Copy" action:@selector(copy:) keyEquivalent:@"c"];
   [menu addItemWithTitle:@"Paste" action:@selector(paste:) keyEquivalent:@"v"];
   [menu addItemWithTitle:@"Paste and Match Style" action:@selector(pasteAsPlainText:) keyEquivalent:@"V"];
+  [menu addItemWithTitle:@"Delete" action:@selector(delete:) keyEquivalent:@""];
   [menu addItemWithTitle:@"Select All" action:@selector(selectAll:) keyEquivalent:@"a"];
   [menu addItem:[NSMenuItem separatorItem]];
   [menu addItemWithTitle:@"Find..." action:@selector(performFindPanelAction:) keyEquivalent:@"f"];
@@ -109,7 +129,9 @@
 {
   NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"Format"] autorelease];
   NSMenu *fontMenu = [[[NSMenu alloc] initWithTitle:@"Font"] autorelease];
+  NSMenu *textMenu = [[[NSMenu alloc] initWithTitle:@"Text"] autorelease];
   NSMenuItem *fontItem = [[[NSMenuItem alloc] initWithTitle:@"Font" action:NULL keyEquivalent:@""] autorelease];
+  NSMenuItem *textItem = [[[NSMenuItem alloc] initWithTitle:@"Text" action:NULL keyEquivalent:@""] autorelease];
 
   [fontMenu addItemWithTitle:@"Show Fonts" action:@selector(orderFrontFontPanel:) keyEquivalent:@"t"];
   [fontMenu addItem:[NSMenuItem separatorItem]];
@@ -124,14 +146,16 @@
 
   [fontItem setSubmenu:fontMenu];
   [menu addItem:fontItem];
-  [menu addItem:[NSMenuItem separatorItem]];
-  [menu addItemWithTitle:@"Align Left" action:@selector(alignLeft:) keyEquivalent:@"{"];
-  [menu addItemWithTitle:@"Center" action:@selector(alignCenter:) keyEquivalent:@"|"];
-  [menu addItemWithTitle:@"Justify" action:@selector(alignJustified:) keyEquivalent:@""];
-  [menu addItemWithTitle:@"Align Right" action:@selector(alignRight:) keyEquivalent:@"}"];
-  [menu addItem:[NSMenuItem separatorItem]];
-  [menu addItemWithTitle:@"Copy Ruler" action:@selector(copyRuler:) keyEquivalent:@""];
-  [menu addItemWithTitle:@"Paste Ruler" action:@selector(pasteRuler:) keyEquivalent:@""];
+  [textMenu addItemWithTitle:@"Align Left" action:@selector(alignLeft:) keyEquivalent:@"{"];
+  [textMenu addItemWithTitle:@"Center" action:@selector(alignCenter:) keyEquivalent:@"|"];
+  [textMenu addItemWithTitle:@"Justify" action:@selector(alignJustified:) keyEquivalent:@""];
+  [textMenu addItemWithTitle:@"Align Right" action:@selector(alignRight:) keyEquivalent:@"}"];
+  [textMenu addItem:[NSMenuItem separatorItem]];
+  [textMenu addItemWithTitle:@"Copy Ruler" action:@selector(copyRuler:) keyEquivalent:@""];
+  [textMenu addItemWithTitle:@"Paste Ruler" action:@selector(pasteRuler:) keyEquivalent:@""];
+  [textItem setSubmenu:textMenu];
+  [menu addItem:textItem];
+  [[NSFontManager sharedFontManager] setFontMenu:fontMenu];
   return menu;
 }
 
